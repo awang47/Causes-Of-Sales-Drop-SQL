@@ -1,1 +1,1 @@
-# causes-of-sales-drop
+In this project, I am going to identify the causes of a sales drop. I am going to test the hypothesis that the timing of the scooter launch attributed to the reduction in sales. Hint, the ZoomZoom Bat Scooter launched on October 10, 2016.
