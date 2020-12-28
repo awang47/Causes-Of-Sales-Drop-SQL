@@ -1,1 +1,53 @@
+#In order to determine whether the launch date attributed to the sales drop, 
+I need to compare ZoomZoom Bat Scooter to other scooter products according to the launch date.
+SELECT * FROM products WHERE product_type='scooter'
 
+#To test the hypothesis that the time of year had an impact on sales performance, we require a scooter model to use as the control or reference group. 
+I will choose a similar scooter launched at a different time. There are several different options in the product database, each with its own similarities and differences to the experimental
+group (ZoomZoom Bat Scooter). The Bat Limited Edition Scooter is suitable for comparison (the control group). It is slightly more expensive, but it was launched only 4 months after the Bat Scooter. Looking at its name, the Bat Limited Edition Scooter seems to share most of the same features, with a number of extras given that it's a "limited edition."
+
+SELECT products.model, sales.sales_transaction_date INTO bat_ltd_sales FROM sales 
+      INNER JOIN products ON sales.product_id=products.product_id WHERE sales.product_id=8 ORDER BY sales.sales_transaction_date 
+      SELECT * FROM bat_ltd_sales LIMIT 5
+      
+      
+#Now I am going to calculate the total number of sales for Bat Limited Edition.
+SELECT COUNT(model) FROM bat_ltd_sales
+
+Bats Limit Edition has 5,803 sales. Bat Scooter sold 7,328.
+
+#So I am creating a count of sales of limited bat edition on a daily basis.
+SELECT sales_transaction_date, count(sales_transaction_date) INTO
+      bat_ltd_sales_count FROM bat_ltd_sales GROUP BY sales_transaction_date
+      ORDER BY sales_transaction_date
+
+SELECT * FROM bat_ltd_sales_count
+
+#Here I need to find out the sum of the daily sales 
+SELECT *, sum(count) OVER (ORDER BY sales_transaction_date) INTO
+       bat_ltd_sales_growth FROM bat_ltd_sales_count
+
+#Now I need to find out the sales transaction of bat limited edition in the first 3 weeks
+SELECT * FROM bat_ltd_sales_growth LIMIT 22
+
+(Sales of the limited-edition scooter did not reach double digits during the first 22 days. The limited edition sold 64 fewer than bat scooter during the first 22 days)
+
+#Here I am going to compute the 7-day lag function for the sum column and insert the results into the bat_ltd_sales_delay table
+SELECT *, lag(sum , 7) OVER (ORDER BY sales_transaction_date) INTO
+      bat_ltd_sales_delay FROM bat_ltd_sales_growth
+      
+ #I am going to use the sales growth as a percentage, comparing the current sales volume to that of 1 week prior.
+ SELECT *, (sum-lag)/lag AS volume INTO bat_ltd_sales_vol FROM bat_ltd_sales_delay
+ SELECT * FROM bat-ltd_sales_vol LIMIT 22
+ 
+Analysis: The sales growth of Bat Limited Edition is more consistent than the original Bat Scooter. 
+The growth within the first week is less than that of the original model, but it is selling positively in longer period. 
+After 22 days of sales, the sales growth of the Bat Limited Edition scooter is 65% compared to the previous week, 
+as compared with the 28% growth identified in the original bat scooter.
+ 
+
+
+      
+
+      
+      
